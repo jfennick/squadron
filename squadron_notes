@@ -1,0 +1,10 @@
+1. Apply precuts to tag_1_delphes_events.root and re-rewrite to disk to minimize disk space.
+2. Rewrite multi_run in haskell so if torque/pbs isn't installed, we can still do calculations in parallel.
+3. Try pythia 8 / different event generators?
+
+Jet Matching
+1. SKT method gives ~45% larger cross sections independent of # of jets, missing Et, xqcut
+2. MLM method gives a nice peak in the # of events *before* cuts as a function of xqcut, but SKT method is monotonically increasing
+3. However, both methods give a peak in the # of events / cross sections *after* cuts at roughly the same xqcut
+4. The optimal value of xqcut increases as a function of the # of explicit jets at madgraph/parton level.  However, although xqcut is different for different # of jets, the cross sections slightly increase and then stabilize as the # of jets is increased.
+5. The optimal value of xqcut depends on which process is being calculated.

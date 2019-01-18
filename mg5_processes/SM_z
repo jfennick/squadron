@@ -1,0 +1,4 @@
+import model sm
+add process p p > z
+output SM_z -f
+quit

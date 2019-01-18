@@ -1,0 +1,15 @@
+import model sm
+add process p p > w+, w+ > j j @0
+add process p p > w+, w+ > l+ vl @1
+add process p p > w+ j, w+ > j j @2
+add process p p > w+ j, w+ > l+ vl @3
+add process p p > w+ j j, w+ > j j @4
+add process p p > w+ j j, w+ > l+ vl @5
+add process p p > w-, w- > j j @6
+add process p p > w-, w- > l- vl~ @7
+add process p p > w- j, w- > j j @8
+add process p p > w- j, w- > l- vl~ @9
+add process p p > w- j j, w- > j j @10
+add process p p > w- j j, w- > l- vl~ @11
+output SM_wj2_decay_lj -f
+quit

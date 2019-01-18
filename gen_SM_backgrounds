@@ -1,0 +1,51 @@
+#!/bin/bash
+# Run run_mg5_SM_backgrounds before this script
+# The approximate runtimes shown are for 4 cores and 1 run of 10000 events
+
+# top
+./multi_run SM_tt SM_tt 5			# 1.5 mins
+./multi_run SM_tt_decay SM_tt_decay 5		# 2.5 mins
+./multi_run SM_ttj1 SM_ttj1 5			# 2.0 mins
+./multi_run SM_ttj1_decay SM_ttj1_decay 5	# ~30 mins
+./multi_run SM_ttj2 SM_ttj2 5			# 6.5 mins
+##./multi_run SM_ttj2_decay SM_ttj2_decay 1	# ~24 hours
+#./multi_run SM_ttj3 SM_ttj3 1			#
+#./multi_run SM_ttj4 SM_ttj4 1			#
+
+# w
+./multi_run SM_w SM_w 5				#
+./multi_run SM_w_decay SM_w_decay 5		#
+./multi_run SM_wj1 SM_wj1 5			#
+./multi_run SM_wj1_decay SM_wj1_decay 5		#
+./multi_run SM_wj2 SM_wj2 5			#
+./multi_run SM_wj2_decay SM_wj2_decay 5		#
+./multi_run SM_wj3 SM_wj3 5			#
+./multi_run SM_wj3_decay SM_wj3_decay 5		#
+#./multi_run SM_wj4 SM_wj4 1			#
+#./multi_run SM_wj4_decay SM_wj4_decay 1	#
+
+# z
+./multi_run SM_z SM_z 5				#
+./multi_run SM_z_decay SM_z_decay 5		#
+./multi_run SM_zj1 SM_zj1 5			#
+./multi_run SM_zj1_decay SM_zj1_decay 5		#
+./multi_run SM_zj2 SM_zj2 5			#
+./multi_run SM_zj2_decay SM_zj2_decay 5		#
+./multi_run SM_zj3 SM_zj3 5			#
+./multi_run SM_zj3_decay SM_zj3_decay 5		#
+#./multi_run SM_zj4 SM_zj4 1			#
+#./multi_run SM_zj4_decay SM_zj4_decay 1	#
+
+# plain 'ol jets
+# This has a very large cross section, but very few (if any) events pass the cuts,
+# so it is not possible to calculate an accurate cross section without generating
+# orders of magnitude more events.
+##./multi_run SM_j4 SM_j4 1			#
+
+# ttz
+./multi_run SM_ttz SM_ttz 1			# 2.0 mins
+./multi_run SM_ttz_decay SM_ttz_decay 1		# ~35 mins
+./multi_run SM_ttzj1 SM_ttzj1 1			# 5.0 mins
+#./multi_run SM_ttzj1_decay SM_ttzj1_decay 1	#~16 hours
+./multi_run SM_ttzj2 SM_ttzj2 1			#~1.5 hours
+#./multi_run SM_ttzj3 SM_ttzj3 1		#

@@ -1,0 +1,38 @@
+#!/bin/bash
+# $1=Mgluino $2=MstopR $3=Mneut1 $4=Mu $5=Tanb
+
+# Defines sin^2theta_W (sinthW2) and M_Z (Mz) and evaluates the a term A_t 
+# which results in zero mixing in the stop sector (Atop) and the value of 
+# the scalar soft mass M_tR (MtRin) which will give a lightest stop mass equal 
+# to Mstopr. 
+
+sinthW2=$(echo "scale=8; 0.2336084" | bc);
+Mz=$(echo "scale=8; 91.187" | bc);
+Cosb=$(echo "scale=8; c( a( $5 ) )" | bc -l);
+Atop=$(echo "scale=8; $4 / $5 " | bc -l);
+MtRin=$(echo "scale=8; sqrt( $2 ^ 2 - 175.0 ^ 2  \
+  - (2.0 / 3.0) * $sinthW2 * c( 2.0 * a( $5 ) ) * $Mz ^ 2 )" | bc -l);
+
+# Changes to SuSpect directory and substitute in the variable values into the
+# template input card squadron_template_lha.in, which is copied to 
+# suspect2_lha.in, then calls on suspect to generate a SUSY spectrum for 
+# the input parameters. 
+
+cd ../SuSpect
+# Define SUSY masses. Beware line numbers may change in future versions of SuSpect!
+sed -e "70 s/M_1_value/$3/g" \
+    -e "72 s/M_3_value/$1/g" \
+    -e "73 s/A_t_value/$Atop/g" \
+    -e "79 s/Mu_value/$4/g" \
+    -e "93 s/M_tR_value/$MtRin/g" squadron_template_lha.in > suspect2_lha.in;
+./suspect2;
+
+# Copies the output file suspect2_lha_out from SuSpect into the file LH.dat
+# in the directory where the MadGraph MSSM calculator is located and runs the
+# calculator to generate a param_card.dat file for the model.
+
+cp suspect2_lha.out ../Calculators/mssm/LH.dat
+cd ../Calculators/mssm/
+rm param_card.dat
+./MSSMCalc 1 0
+cd ../../squadron

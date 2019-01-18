@@ -1,0 +1,5 @@
+import model sm
+add process p p > t t~, (t > w+ b, w+ > ta+ vt), (t~ > w- b~, w- > ta- vt~) @0
+add process p p > t t~ j, (t > w+ b, w+ > ta+ vt), (t~ > w- b~, w- > ta- vt~) @1
+output SM_ttj1_decay -f
+quit

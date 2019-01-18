@@ -1,0 +1,5 @@
+import model sm
+add process p p > w+, w+ > l+ vl @0
+add process p p > w-, w- > l- vl~ @1
+output SM_w_decay_l -f
+quit

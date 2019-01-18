@@ -1,0 +1,9 @@
+import model sm
+add process p p > w+ @0
+add process p p > w- @1
+add process p p > w+ j @2
+add process p p > w- j @3
+add process p p > w+ j j @4
+add process p p > w- j j @5
+output SM_wj2 -f
+quit

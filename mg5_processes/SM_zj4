@@ -1,0 +1,4 @@
+import model sm
+add process p p > z j j j j
+output SM_zj4 -f
+quit

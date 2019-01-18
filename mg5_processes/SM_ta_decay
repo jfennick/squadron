@@ -1,0 +1,11 @@
+import model sm
+add process p p > w+, w+ > j j
+add process p p > w+, (w+ > ta+ vt, ta+ > j j vt~)
+add process p p > w+, (w+ > ta+ vt, ta+ > j j j vt~)
+add process p p > w+, (w+ > ta+ vt, ta+ > j j j j vt~)
+add process p p > w-, w- > j j
+add process p p > w-, (w- > ta- vt~, ta- > j j vt)
+add process p p > w-, (w- > ta- vt~, ta- > j j j vt)
+add process p p > w-, (w- > ta- vt~, ta- > j j j j vt)
+output SM_ta_decay -f
+quit

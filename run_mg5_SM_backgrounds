@@ -1,0 +1,58 @@
+#!/bin/bash
+# Run this script before gen_SM_backgrounds
+# This script takes about 2 hours to run. Most of the time is taken in 5+ parton processes.
+
+# top
+./run_mg5 SM_tt 10000
+./run_mg5 SM_tt_decay 10000
+./run_mg5 SM_ttj1 10000
+./run_mg5 SM_ttj1_decay 10000
+./run_mg5 SM_ttj2 10000
+##./run_mg5 SM_ttj2_decay 10000
+#./run_mg5 SM_ttj3 10000
+##./run_mg5 SM_ttj3_decay 10000
+#./run_mg5 SM_ttj4 10000
+#./run_mg5 SM_ttj4_decay 10000
+
+# w
+./run_mg5 SM_w 10000
+./run_mg5 SM_w_decay 10000
+./run_mg5 SM_wj1 10000
+./run_mg5 SM_wj1_decay 10000
+./run_mg5 SM_wj2 10000
+./run_mg5 SM_wj2_decay 10000
+./run_mg5 SM_wj3 10000
+./run_mg5 SM_wj3_decay 10000
+#./run_mg5 SM_wj4 10000
+#./run_mg5 SM_wj4_decay 10000
+
+# z
+./run_mg5 SM_z 10000
+./run_mg5 SM_z_decay 10000
+./run_mg5 SM_zj1 10000
+./run_mg5 SM_zj1_decay 10000
+./run_mg5 SM_zj2 10000
+./run_mg5 SM_zj2_decay 10000
+./run_mg5 SM_zj3 10000
+./run_mg5 SM_zj3_decay 10000
+#./run_mg5 SM_zj4 10000
+#./run_mg5 SM_zj4_decay 10000
+
+# plain 'ol jets
+# This has a very large cross section, but very few (if any) events pass the cuts,
+# so it is not possible to calculate an accurate cross section without generating
+# orders of magnitude more events.
+#
+##./run_mg5 SM_j4 10000
+
+# ttz
+./run_mg5 SM_ttz 10000
+./run_mg5 SM_ttz_decay 10000
+./run_mg5 SM_ttzj1 10000
+./run_mg5 SM_ttzj1_decay 10000
+./run_mg5 SM_ttzj2 10000
+##./run_mg5 SM_ttzj2_decay 10000
+#./run_mg5 SM_ttzj3 10000
+##./run_mg5 SM_ttzj3_decay 10000
+#./run_mg5 SM_ttzj4 10000
+#./run_mg5 SM_ttzj4_decay 10000

@@ -1,0 +1,7 @@
+import model sm
+add process p p > t t~ QED=0 QCD=99, (t > w+ b, w+ > j j), (t~ > w- b~, w- > j j)
+add process p p > t t~ QED=0 QCD=99, (t > w+ b, w+ > ta+ vt), (t~ > w- b~, w- > j j)
+add process p p > t t~ QED=0 QCD=99, (t > w+ b, w+ > j j), (t~ > w- b~, w- > ta- vt~)
+add process p p > t t~ QED=0 QCD=99, (t > w+ b, w+ > ta+ vt), (t~ > w- b~, w- > ta- vt~)
+output SM_tt_decay -f
+quit

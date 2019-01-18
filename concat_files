@@ -1,0 +1,8 @@
+#!/bin/bash
+
+files=$1
+
+for i in $files; do
+  echo $1
+  cat $i
+done

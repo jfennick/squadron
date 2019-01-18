@@ -1,0 +1,162 @@
+#!/bin/bash
+#########################################################
+# RUN THIS SCRIPT FROM WITHIN ~/MG5_aMC_v2_1_2/squadron !!!
+# This script also assumes the following:
+# ROOT is installed (best to use your distro's package manager) and .bashrc environment variables are set
+# pythia, pgs, delphes, ExRootAnalysis are installed (from MG5 shell)
+# SuSpect is at ~/MG5_aMC_v2_1_2/SuSpect (you may need to recompile)
+# Calculators are at ~/MG5_aMC_v2_1_2/Calculators
+#
+# This script calls on SuSpect to generate a SUSY
+# spectrum for the "Squadron of Jets" project, then 
+# runs MadGraph on the spectrum to generate the 
+# four-top process p p > go go > t t~ t t~, with decays
+# into jets.  
+#########################################################
+
+echo "Do you want to run MadGraph5 in order to create a directory (y/n)?"
+read RunMG5 
+echo "Do you want to generate events for these points in MadEvent (y/n)?"
+read RunME
+
+#-------------------------------------------------------------------------------
+# If mg5 is being run (i.e. if the response was "y" at the prompt), this 
+# routine creates the directory.  The input information for mg5 is located
+# in the susy_gg file in the mg5_processes folder, which is
+# assumed to be in the same directory as cycle_squadron_delphes.
+#-------------------------------------------------------------------------------
+
+if [ $RunMG5 = "y" ]; 
+then
+  ./run_mg5 susy_gg 10000
+fi
+
+#-------------------------------------------------------------------------------
+# Copies the existing gg_xsecs_out.dat file into a backup file to use in the
+# case that events are not being generated.  This file is temporary, and is 
+# deleted at the termination of this script.
+#-------------------------------------------------------------------------------
+
+#cp gg_xsecs_out.dat gg_xsecs_ref.dat
+
+#-------------------------------------------------------------------------------
+# Initializes the gg_xsecs_out.dat file with headings and creates the 
+# gg_jetdist.txt file.
+#-------------------------------------------------------------------------------
+
+#rm gg_jetdist_out.dat
+#touch gg_jetdist_out.dat
+
+#echo -e "Model\tM_go\tM_t1~\tM_n1\txsec no cuts\txsec w/ cuts\t#Events no cuts\t#Events w/ cuts\tefficiency" > gg_xsecs_out.dat;
+
+#-------------------------------------------------------------------------------
+# If the user elects to generate events, this portion of the script is called.
+# Reads a line from the susy_spectra.dat file in the squadron_batch_files
+# directory.  This file contains sets of the three mass parameters used in
+# creating the mass spectra from suspect (Mgluino,Mneut1,MstopR), as well as
+# values of the Higgs mu parameter (Mu) and tan(beta) (Tanb).  The parameter
+# ModName is a name for the model. 
+#-------------------------------------------------------------------------------
+
+if [ $RunME = "y" ]; 
+then
+echo "Events will be generated for all data points in susy_spectra.dat"
+cp squadron_batch_files/squadron_template_lha.in ../SuSpect/
+
+exec 3<squadron_batch_files/susy_spectra.dat
+while read ModNum Mgluino MstopR Mneut1 Mu Tanb <&3
+do
+
+./generate_susy_spectrum $Mgluino $MstopR $Mneut1 $Mu $Tanb
+#-------------------------------------------------------------------------------
+# If MSSMCalc generates the param_card.dat file (i.e. no errors), copy it 
+# into the susy_gg folder for event generation.
+#-------------------------------------------------------------------------------
+
+exec 8<../Calculators/mssm/param_card.dat
+read errorcheck<&8
+if [ "$errorcheck" = "# ERROR from spectrum generator:" ]; 
+then 
+echo "Spectrum had errors.  Moving to next point."
+else
+cp ../Calculators/mssm/param_card.dat susy_gg/Cards/param_card.dat
+
+# Now we can generate events
+./multi_run susy_gg gg_$ModNum 1 # Only need one (or a few) runs because many events pass cuts
+
+#-------------------------------------------------------------------------------
+# Reads the cross-section for the parton-level process into a variable called 
+# xsec, then prints an output line with model number, particle masses, and 
+# cross-section into a file called gg_xsecs_out.dat
+#-------------------------------------------------------------------------------
+
+#exec 4<SubProcesses/gg_${ModNum}_results.dat
+#read xsec therest <&4
+
+#-------------------------------------------------------------------------------
+# Reads the efficiency  of the cuts output by root into the variable eff and
+# removes the temporary gg_${ModNum}_efficiency.txt file
+#-------------------------------------------------------------------------------
+
+#TODO efficiency file format has changed, need to update this code
+#exec 7<gg_${ModNum}_efficiency.txt
+#read numberOfEvents numEventsPassCuts eff <&7
+#rm gg_${ModNum}_efficiency.txt
+
+#xsecconv=`echo ${xsec} | sed 's/E/\\*10\\^/' | sed 's/+//'`
+#xsecfb=$(echo "scale=8; $xsecconv * 1000.0" | bc -l);
+#xsecafterfb=$(echo "scale=8; $xsecconv * $eff * 1000.0" | bc -l);
+#cd ../../
+#echo -e "${ModNum}\t${Mgluino}\t${MstopR}\t${Mneut1}\t${xsecfb}\t${xsecafterfb}\t${numberOfEvents}\t\t${numEventsPassCuts}\t\t${eff}" >> gg_xsecs_out.dat;
+
+fi # Closes the if loop
+
+done # Closes the do loop
+
+#-------------------------------------------------------------------------------
+# This portion of the code is called upon when events are not regenerated.  The
+# index for the run is read off of the dummy file gg_xsecs_ref.dat.
+#-------------------------------------------------------------------------------
+
+else
+exec 3<gg_xsecs_ref.dat
+while read ModNum Mgluino MstopR Mneut1 xsecfb therest <&3
+do 
+if [ $ModNum != "Model" ]; then
+
+# Apply cuts.  Pass parameters as explicit arguments rather than using sed
+cd susy_gg/Events
+#interpreted
+#root -l -q "../../squadron_batch_files/squadron_cuts_delphes.C(\"gg_${ModNum}/tag_1_delphes_events.root\",\"susy_gg\",\"gg_${ModNum}\")"
+#compiled (~11X faster)
+../../squadron_batch_files/squadron_cuts_delphes gg_${ModNum}/tag_1_delphes_events.root susy_gg gg_${ModNum}
+
+# Copy the results.txt file to the susy_gg directory for convenience
+cp $1_results.txt ..
+
+#-------------------------------------------------------------------------------
+# Reads the efficiency  of the cuts output by root into the variable eff and
+# removes the temporary gg_${ModNum}_efficiency.txt file
+#-------------------------------------------------------------------------------
+
+exec 7<gg_${ModNum}_efficiency.txt
+read numberOfEvents numEventsPassCuts eff <&7
+rm gg_${ModNum}_efficiency.txt
+
+#-------------------------------------------------------------------------------
+# Converts the cross-section from scientific notation to a form bash can read,
+# and puts the result in fb rather than pb.  Then, it calculates the 
+# cross-section after cuts (also in fb) and prints an output line with model 
+# number, particle masses, and cross-section both before and after cuts into a 
+# file called gg_xsecs_out.dat in the main MadGraph5 directory.
+#-------------------------------------------------------------------------------
+
+xsecafterfb=$(echo "scale=8; $xsecfb * $eff" | bc -l);
+cd ../../
+echo -e "${ModNum}\t${Mgluino}\t${MstopR}\t${Mneut1}\t${xsecfb}\t${xsecafterfb}\t${numberOfEvents}\t\t${numEventsPassCuts}\t\t${eff}" >> gg_xsecs_out.dat;
+
+fi
+done # Closes the do loop.
+
+fi # Closes the "else" part of the if statement and removes gg_xsecs_ref.dat
+rm gg_xsecs_ref.dat

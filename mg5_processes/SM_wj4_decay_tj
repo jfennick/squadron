@@ -1,0 +1,23 @@
+import model sm
+add process p p > w+, w+ > j j @0
+add process p p > w+, w+ > ta+ vt @1
+add process p p > w+ j, w+ > j j @2
+add process p p > w+ j, w+ > ta+ vt @3
+add process p p > w+ j j, w+ > j j @4
+add process p p > w+ j j, w+ > ta+ vt @5
+add process p p > w+ j j j, w+ > j j @6
+add process p p > w+ j j j, w+ > ta+ vt @7
+add process p p > w+ j j j j, w+ > j j @8
+add process p p > w+ j j j j, w+ > ta+ vt @9
+add process p p > w-, w- > j j @10
+add process p p > w-, w- > ta- vt~ @11
+add process p p > w- j, w- > j j @12
+add process p p > w- j, w- > ta- vt~ @13
+add process p p > w- j j, w- > j j @14
+add process p p > w- j j, w- > ta- vt~ @15
+add process p p > w- j j j, w- > j j @16
+add process p p > w- j j j, w- > ta- vt~ @17
+add process p p > w- j j j j, w- > j j @18
+add process p p > w- j j j j, w- > ta- vt~ @19
+output SM_wj4_decay_tj -f
+quit

@@ -1,0 +1,86 @@
+#!/bin/bash
+
+if ["$2" = ""]; then
+numEvents="100000"
+else
+numEvents="$2"
+fi
+
+# Run mg5 with a file containing process commands
+python ~/MG5_aMC_v2_1_2/bin/mg5_aMC ~/MG5_aMC_v2_1_2/squadron/mg5_processes/$1
+# The file must contain the command "output $1 -f"
+
+# So we know which directory to cd to here
+cd $1/Cards
+
+# Copy the mg5 process commands so later on we can be sure which processes were generated
+cp ~/MG5_aMC_v2_1_2/squadron/mg5_processes/$1 .. # This is also in Cards/proc_card_mg5.dat
+
+# Define pre-cuts to prevent MadEvent from generating events which we will just cut anyway.
+# (These values should match the values in squadron_cuts_delphes.C)
+# Beware line numbers may change in future versions of MadGraph!
+# Set ickkw to 1 to turn on Jet Matching.
+sed -e "32 s/  10000 = nevents/  $numEvents = nevents/g" \
+    -e "41 s/     6500     = ebeam1/     3500     = ebeam1/g" \
+    -e "42 s/     6500     = ebeam2/     3500     = ebeam2/g" \
+    -e "64 s/ 0        = ickkw / 1        = ickkw /g" \
+    -e "106 s/20  = ptj/30  = ptj/g" \
+    -e "110 s/  0  = misset/100  = misset/g" \
+    -e "137 s/   0  = etajmin/   0  = etajmin/g" \
+    -e "144 s/ 0.4 = drjj/ 0.4 = drjj/g" \
+    run_card.dat > runtemp;
+#    -e "197 s/ 0   = ptj1min/30   = ptj1min/g" \
+#    -e "198 s/ 0   = ptj2min/30   = ptj2min/g" \
+#    -e "199 s/ 0   = ptj3min/30   = ptj3min/g" \
+
+#mv runtemp run_card.dat
+# runtemp will be moved to run_card.dat in multi_run_pbs
+
+#cp pythia_card_default.dat pythia_card.dat
+# NO pythia_card.dat; we will run our modified pythia ourselves (see multi_run_pbs)
+#cp pgs_card_ATLAS.dat pgs_card.dat
+
+# Comment out unnecessary output to massively decrease filesizes.
+# Beware line numbers may change in future versions of Delphes!
+sed -e "530 s|  add Branch Delphes/allParticles|# add Branch Delphes/allParticles|g" \
+    -e "532 s|  add Branch TrackMerger/tracks|# add Branch TrackMerger/tracks|g" \
+    -e "533 s|  add Branch Calorimeter/towers|# add Branch TrackMerger/towers|g" \
+    -e "535 s|  add Branch Calorimeter/eflowTracks|# add Branch TrackMerger/eflowTracks|g" \
+    -e "536 s|  add Branch Calorimeter/eflowPhotons|# add Branch TrackMerger/eflowPhotons|g" \
+    -e "537 s|  add Branch Calorimeter/eflowNeutralHadrons|# add Branch TrackMerger/eflowNeutralHadrons|g" \
+    delphes_card_ATLAS.dat > delphes_card.dat;
+
+#rm delphes_card.dat #plots hang at delphes level
+
+# Hide plot cards because generate_events calls td (topdrawer) which intermittently
+# hangs (with no output!) after printing "INFO: Creating Plots for Pythia level"
+# Several seemingly related bug reports have been filed at https://bugs.launchpad.net/mg5amcnlo
+# (1001245,246720,230244) but the problem still persists, so we will just avoid
+# generating the plots (which we don't really need)
+
+rm plot_card.dat
+
+# Prevent crossx.html from opening
+sed -e "62 s|# pythia8_path = ./pythia8| pythia8_path = ./pythia8186|g" \
+    -e "86 s/# automatic_html_opening = True/automatic_html_opening = False/g" \
+    me5_configuration.txt > temp.txt;
+mv temp.txt me5_configuration.txt;
+
+# MadGraph only compiles with the first level of optimizations -O1.
+# We can use -Ofast to enable -O3, --fast-math, plus a few additional flags
+cd ../Source
+sed -e "4 s/  FFLAGS= -O -w/  FFLAGS= -Ofast -w/g" make_opts > temp
+mv temp make_opts
+
+# Look for pythia_card.dat in the current directory (instead of ../Cards/ )
+cd ../bin/internal
+sed -e "s|\.\./Cards/pythia_card.dat|pythia_card.dat|g" run_pythia > temp
+mv temp run_pythia
+chmod +x run_pythia
+
+# Workaround a bug
+sed -e "1346 s/makehtml=True/makehtml=False/g" common_run_interface.py > temp
+mv temp common_run_interface.py
+
+cd ../../..
+echo "MadGraph5 executed."

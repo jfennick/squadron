@@ -1,0 +1,15 @@
+import model sm
+add process p p > z, z > j j @0
+add process p p > z, z > vl vl~ @1
+add process p p > z, z > l+ l- @2
+add process p p > z j, z > j j @3
+add process p p > z j, z > vl vl~ @4
+add process p p > z j, z > l+ l- @5
+add process p p > z j j, z > j j @6
+add process p p > z j j, z > vl vl~ @7
+add process p p > z j j, z > l+ l- @8
+add process p p > z j j j, z > j j @9
+add process p p > z j j j, z > vl vl~ @10
+add process p p > z j j j, z > l+ l- @11
+output SM_zj3_decay_lvj_match -f
+quit

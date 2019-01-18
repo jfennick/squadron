@@ -1,0 +1,6 @@
+import model sm
+add process p p > z j j j j, z > j j
+add process p p > z j j j j, z > vl vl~
+add process p p > z j j j j, z > ta+ ta-
+output SM_zj4_decay -f
+quit

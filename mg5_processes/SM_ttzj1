@@ -1,0 +1,4 @@
+import model sm
+add process p p > t t~ z j
+output SM_ttzj1 -f
+quit

@@ -1,0 +1,20 @@
+#!/bin/bash
+# $1=process, $2= # runs, $3= background number, $4=xqcut max, $5 recut (1 or 0)
+
+mv $1/Cards/run_card.dat $1/Cards/runtemp
+mv $1/Cards/pythia_card.dat $1/Cards/pythiatemp
+
+for i in $(seq 0 "$4"); do
+  xqcut=$(echo "5*$i" | bc)
+  sed -e "258 s/ 0   = xqcut/ $xqcut   = xqcut/g" $1/Cards/runtemp > $1/Cards/run_card.dat
+  # use mlm method
+  cp $1/Cards/pythiatemp $1/Cards/pythia_card.dat
+  time ./multi_run "$1" "$1_mlm_xqcut$xqcut" "$2" "$3" "$5"
+  # use showerkt method
+  cp $1/Cards/pythiatemp $1/Cards/pythia_card.dat
+  echo "showerkt=T" >> $1/Cards/pythia_card.dat
+  time ./multi_run "$1" "$1_skt_xqcut$xqcut" "$2" "$3" "$5"
+done
+
+mv $1/Cards/runtemp $1/Cards/run_card.dat
+mv $1/Cards/pythiatemp $1/Cards/pythia_card.dat

@@ -1,0 +1,15 @@
+import model sm
+add process p p > t t~ z j, (t > w+ b, w+ > j j), (t~ > w- b~, w- > j j), (z > j j)
+add process p p > t t~ z j, (t > w+ b, w+ > ta+ vt), (t~ > w- b~, w- > j j), (z > j j)
+add process p p > t t~ z j, (t > w+ b, w+ > j j), (t~ > w- b~, w- > ta- vt~), (z > j j)
+add process p p > t t~ z j, (t > w+ b, w+ > ta+ vt), (t~ > w- b~, w- > ta- vt~), (z > j j)
+add process p p > t t~ z j, (t > w+ b, w+ > j j), (t~ > w- b~, w- > j j), (z > vl vl~)
+add process p p > t t~ z j, (t > w+ b, w+ > ta+ vt), (t~ > w- b~, w- > j j), (z > vl vl~)
+add process p p > t t~ z j, (t > w+ b, w+ > j j), (t~ > w- b~, w- > ta- vt~), (z > vl vl~)
+add process p p > t t~ z j, (t > w+ b, w+ > ta+ vt), (t~ > w- b~, w- > ta- vt~), (z > vl vl~)
+add process p p > t t~ z j, (t > w+ b, w+ > j j), (t~ > w- b~, w- > j j), (z > ta+ ta-)
+add process p p > t t~ z j, (t > w+ b, w+ > ta+ vt), (t~ > w- b~, w- > j j), (z > ta+ ta-)
+add process p p > t t~ z j, (t > w+ b, w+ > j j), (t~ > w- b~, w- > ta- vt~), (z > ta+ ta-)
+add process p p > t t~ z j, (t > w+ b, w+ > ta+ vt), (t~ > w- b~, w- > ta- vt~), (z > ta+ ta-)
+output SM_ttzj1_decay -f
+quit

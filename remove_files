@@ -1,0 +1,13 @@
+#!/bin/bash
+# Remove unnecessary files to save disk space
+
+rm pythia_events.hep # This is the big one
+# Note: Since we are deleting all of the events anyway, calling gzip hits the hard drive
+# and massively wastes our time.  Comment out the two gzip lines 3372-3373 in 
+# the store_result function of madgraph/interface/madevent_interface.py
+# (This is just below where it prints out 'Storing Pythia files of Previous run')
+rm events.tree
+rm xsecs.tree
+rm fort.0
+rm beforeveto.tree
+rm pythia.done

@@ -1,0 +1,6 @@
+import model sm
+add process p p > z, z > j j @0
+add process p p > z, z > vl vl~ @1
+add process p p > z, z > l+ l- @2
+output SM_z_decay_lvj -f
+quit

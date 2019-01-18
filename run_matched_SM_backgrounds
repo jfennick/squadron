@@ -1,0 +1,53 @@
+#!/bin/bash
+# Run this script before gen_matched_SM_backgrounds
+# Default to 100k events per run because due to I/O, it is ~2X as fast as
+# doing 10 10k runs while remaining below the event limitations of madgraph/pythia
+
+# w manual tau decay withOUT jet decay products
+#time ./run_mg5 SM_w_decay_t 100000
+#time ./run_mg5 SM_wj1_decay_t 100000
+#time ./run_mg5 SM_wj2_decay_t 100000
+time ./run_mg5 SM_wj3_decay_t 100000
+#time ./run_mg5 SM_wj4_decay_t 100000
+
+# w manual lepton decay withOUT jet decay products
+#time ./run_mg5 SM_w_decay_l 100000
+#time ./run_mg5 SM_wj1_decay_l 100000
+#time ./run_mg5 SM_wj2_decay_l 100000
+time ./run_mg5 SM_wj3_decay_l 100000
+#time ./run_mg5 SM_wj4_decay_l 100000
+
+# w manual tau decay WITH jet decay products
+#time ./run_mg5 SM_w_decay_tj 100000
+#time ./run_mg5 SM_wj1_decay_tj 100000
+#time ./run_mg5 SM_wj2_decay_tj 100000
+time ./run_mg5 SM_wj3_decay_tj 100000
+#time ./run_mg5 SM_wj4_decay_tj 100000
+
+# w manual lepton decay WITH jet decay products
+#time ./run_mg5 SM_w_decay_lj 100000
+#time ./run_mg5 SM_wj1_decay_lj 100000
+#time ./run_mg5 SM_wj2_decay_lj 100000
+time ./run_mg5 SM_wj3_decay_lj 100000
+#time ./run_mg5 SM_wj4_decay_lj 100000
+
+# w no decay
+#time ./run_mg5 SM_w 100000
+#time ./run_mg5 SM_wj1 100000
+#time ./run_mg5 SM_wj2 100000
+time ./run_mg5 SM_wj3 100000
+#time ./run_mg5 SM_wj4 100000
+
+# w automatic madspin decay
+# We choose to make a duplicate directory for the madspin runs instead of re-using
+# the above directories and worrying whether the files are correct on each invocation
+#cp -r SM_w SM_w_madspin
+#cp SM_w_madspin/Cards/madspin_card_default.dat SM_w_madspin/Cards/madspin_card.dat
+#cp -r SM_wj1 SM_wj1_madspin
+#cp SM_wj1_madspin/Cards/madspin_card_default.dat SM_wj1_madspin/Cards/madspin_card.dat
+#cp -r SM_wj2 SM_wj2_madspin
+#cp SM_wj2_madspin/Cards/madspin_card_default.dat SM_wj2_madspin/Cards/madspin_card.dat
+cp -r SM_wj3 SM_wj3_madspin
+cp SM_wj3_madspin/Cards/madspin_card_default.dat SM_wj3_madspin/Cards/madspin_card.dat
+#cp -r SM_wj4 SM_wj4_madspin
+#cp SM_wj4_madspin/Cards/madspin_card_default.dat SM_wj4_madspin/Cards/madspin_card.dat

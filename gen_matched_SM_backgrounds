@@ -1,0 +1,47 @@
+#!/bin/bash
+# First the bare process is ran (without decay, then using pythia to decay),
+# then manually decayed jet-matched processes are run in a range of xqcut.
+# The cross sections (before or after cuts?) should agree within ~20%
+
+# w manual tau decay withOUT jet decay products
+#time ./multi_run SM_w_decay_t SM_w_decay_t 5 6 0
+#time ./cycle_xqcut SM_wj1_decay_t 5 6 10 0
+#time ./cycle_xqcut SM_wj2_decay_t 5 6 10 0
+#time ./cycle_xqcut SM_wj3_decay_t 5 6 10 0		# 14 mins per 100k
+./multi_run_pbs SM_wj3_decay_t SM_wj3_decay_t 10 6 0 40 100 5 #6:50 to gen events, 2:50 for pythia/delphes/cuts best xqcut=65
+#time ./cycle_xqcut SM_wj4_decay_t 5 6 10 0
+
+# w manual lepton decay withOUT jet decay products
+#time ./multi_run SM_w_decay_l SM_w_decay_l 5 6 0
+#time ./cycle_xqcut SM_wj1_decay_l 5 6 10 0
+#time ./cycle_xqcut SM_wj2_decay_l 5 6 10 0
+time ./cycle_xqcut SM_wj3_decay_l 5 6 10 0
+#time ./cycle_xqcut SM_wj4_decay_l 5 6 10 0
+
+# w manual tau decay WITH jet decay products
+#time ./multi_run SM_w_decay_tj SM_w_decay_tj 5 6 0
+#time ./cycle_xqcut SM_wj1_decay_tj 5 6 10 0
+#time ./cycle_xqcut SM_wj2_decay_tj 5 6 10 0
+time ./cycle_xqcut SM_wj3_decay_tj 5 6 10 0
+#time ./cycle_xqcut SM_wj4_decay_tj 5 6 10 0
+
+# w manual lepton decay WITH jet decay products
+#time ./multi_run SM_w_decay_lj SM_w_decay_lj 5 6 0
+#time ./cycle_xqcut SM_wj1_decay_lj 5 6 10 0
+#time ./cycle_xqcut SM_wj2_decay_lj 5 6 10 0
+time ./cycle_xqcut SM_wj3_decay_lj 5 6 10 0
+#time ./cycle_xqcut SM_wj4_decay_lj 5 6 10 0
+
+# w no decay
+#time ./multi_run SM_w SM_w 5 6 0 # All other w cross sections should agree with this process
+#time ./cycle_xqcut SM_wj1 5 6 10 0
+#time ./cycle_xqcut SM_wj2 5 6 10 0
+time ./cycle_xqcut SM_wj3 5 6 10 0
+#time ./cycle_xqcut SM_wj4 5 6 10 0
+
+# w automatic madspin decay
+#time ./multi_run SM_w_madspin SM_w_madspin 5 6 0
+#time ./cycle_xqcut SM_wj1_madspin 5 6 10 0
+#time ./cycle_xqcut SM_wj2_madspin 5 6 10 0
+time ./cycle_xqcut SM_wj3_madspin 5 6 10 0
+#time ./cycle_xqcut SM_wj4_madspin 5 6 10 0

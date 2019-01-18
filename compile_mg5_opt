@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# MadGraph only compiles with the first level of optimizations -O1.
+# We can use -Ofast to enable -O3, --fast-math, plus a few additional flags
+
+# First we need to modify the makefiles
+sed -e "22 s/FFLAGS = -O/FFLAGS = -Ofast/g" ../pythia-pgs/src/makefile > ../pythia-pgs/src/temp
+mv ../pythia-pgs/src/temp ../pythia-pgs/src/makefile
+sed -e "17 s/COMPILE-ARGS=  -fno-automatic/COMPILE-ARGS= -Ofast -fno-automatic/g" ../pythia-pgs/libraries/PGS4/Makefile > ../pythia-pgs/libraries/PGS4/temp
+mv ../pythia-pgs/libraries/PGS4/temp ../pythia-pgs/libraries/PGS4/Makefile
+sed -e "11 s/FFOPTS = -O1/FFOPTS = -Ofast/g" ../pythia-pgs/libraries/pylib/src/Makefile > ../pythia-pgs/libraries/pylib/src/temp
+mv ../pythia-pgs/libraries/pylib/src/temp ../pythia-pgs/libraries/pylib/src/Makefile
+# If you want to recompile lhapdf, first sudo apt-get install automake-1.9
+# and then edit line 30 of configure.ac
+# sed -e "30 s/FFLAGS=\"-O\"/FFLAGS=\"-Ofast\"/g" ../pythia-pgs/libraries/lhapdf/Configure.ac > ../pythia-pgs/libraries/lhapdf/Configure.ac
+# When you make clean pythia-pgs, it checks if configure.ac has been modified
+# and if so, recreates the lhapdf Makefiles. However, there is currently a bug
+# in that script, so it doesn't work and thus we probably shouldn't worry about
+# recompiling lhapdf for now.
+
+sed -e "18 s/CXXFLAGS += \$(ROOTCFLAGS)/CXXFLAGS += -Ofast \$(ROOTCFLAGS)/g" ../Delphes/Makefile > ../Delphes/temp
+mv ../Delphes/temp ../Delphes/Makefile
+sed -e "18 s/CXXFLAGS += \$(ROOTCFLAGS)/CXXFLAGS += -Ofast \$(ROOTCFLAGS)/g" ../ExRootAnalysis/Makefile > ../ExRootAnalysis/temp
+mv ../ExRootAnalysis/temp ../ExRootAnalysis/Makefile
+
+sed -e "2 s/  FFLAGS= -O -w/  FFLAGS= -Ofast -w/g" -e "9 s/  FC=g77 /  FC=gfortran " ../MadAnalysis/makefile > ../MadAnalysis/temp
+mv ../MadAnalysis/temp ../MadAnalysis/makefile
+
+# Now we can recompile
+cd ../pythia-pgs
+make clean;make
+cd ../Delphes
+make clean;make
+cd ../ExRootAnalysis
+make clean;make
+cd ../MadAnalysis
+make clean;make

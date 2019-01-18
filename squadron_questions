@@ -1,0 +1,43 @@
+Hereafter, "the paper" refers to arxiv 1109.6014v2
+
+1. When setting susy masses to 3 TeV, SuSpect gives warnings and MSSMCalc fails to generate a mass spectrum for M_t1~ < 700 and for M_go < 900. Is this simply a numerical issue, or does it have a physical origin? Should we try other spectrum generators? (SoftSUSY, SPheno, etc)  I also get SuSpect warnings for 1 TeV (but MSSMCalc runs), so this issue may also be present to a lesser extent.
+
+2. Pre-cuts vs cuts: Page 11 of the paper says we require 5 jets with > 30 GeV P_t, page 12 says 40, and the code requires 30 for all 5 but 40 for the leading 3. ?
+
+3. Page 10 of the paper says we scan the mass parameter space in 50 GeV increments, but susy_spectra.dat uses 100 GeV increments. ?
+
+4. etamax is 5 in run_card.dat, 2.5 in the TauTagging module in delphes_card.dat, and 2.4 (and unused) in our analysis. ?
+
+5. DeltaR is 0.4 in run_card.dat and our analysis but 0.5 in the TauTagging module in delphes_card.dat ?
+
+6. Are there any more SM backgrounds that were omitted / become relevant at 14 TeV or when Tau Tagging is used?
+
+7. Page 10 of the paper says the W and Z backgrounds were only calculated to 3 jets at the parton level.  What about t t~ and t t~ z?  Is there any reason not to do more? (It seems madgraph can easily generate diagrams for 4 final state partons, has trouble with 5, and makes almost no progress for 6.)
+
+8. Do I need to bother with applying NLO K-factor corrections with Prospino since MadGraph can now do NLO calculations?  (See https://launchpad.net/mg5amcnlo/+announcement/12270)  Looks like NO.
+
+9. Jet Matching: Are the matched cross sections accurate? (See https://cp3.irmp.ucl.ac.be/projects/madgraph/wiki/IntroMatching)  The claim there is no, but that was written in 2009 before NLO.
+
+10. Why are we using model_v4 in susy_gg (instead of the newest model) ?
+
+11. Do we really need to specify decay chains?  Can we just tell madgraph "add process p p > X Y" where X = t t~, w+, w-, z, t t~ z and Y = j, j j, j j j, etc. ?
+
+    When specifying decay chains, the cross sections before applying cuts are not what is expected.  For example, the t t~ uncut cross section decreases by a factor of 9.3 where a factor of 7.3 is expected due to eliminating e+/e-, mu+/mu- decay products.  This discrepancy may be because Madgraph allows the process t > w+ b, but refuses to allow the processes t > w+ s and t > w+ d.
+
+    Moreover, when allowing madspin to automatically perform the decays, the uncut cross sections are nearly identical to the undecayed processes, but the signal efficiency is nearly identical to the manually decayed processes, so the two methods give a different calculated cross section after cuts. (See https://bugs.launchpad.net/mg5amcnlo/+bug/1268183 comments 8 & 9)
+
+(Also, in the case of p p > t t~ j j, specifying the decay chain increases the time it takes to generate events by several orders of magnitude.)
+
+12. In general, the cross sections after cuts for different # of jets at parton level varies significantly.  Is this a double-counting issue? YES (See http://www.niu.edu/spmartin/madgraph/madsyntax.html), need to apply jet matching.
+
+13. When calculating SM backgrounds, we are calculating some specific processes and then padding with jets until the number of partons reaches madgraph's limit.  In addition to simply padding with jets, shouldn't we also include all combinations of the specific processes below the parton limit?  (i.e. t t~ t t~ j, w+ w- j j j, z z j j j, etc)
+
+14. Do we need to specify decay for taus?  (Taus decay in ~90um, so it seems like madgraph/delphes must do tau tagging based off the decay products)
+
+15. Can we utilize the invariant jet mass Mij to improve our cuts?  For example, gluino decays will not only produce a lot of tops and therefore a lot of jets, but the jets' Mij's should be peaked around the decay products, which would not be the case for jets created by showering.
+
+16. Why are our Pt cuts so low?  (SM backgrounds plummett around 150GeV)  Would more stringent cuts kill too many signal events?
+
+17. Should we adjust our search in light of 1406.0858v2, 1406.0848v1, etc?
+
+18. Should we incorporate azimuthal forward jet correlation information ala 1403.2726v1 ?
